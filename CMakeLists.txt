@@ -12,7 +12,15 @@ set(HEADERS
     include/imglib.h
 )
 
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+
 add_subdirectory(modules/imgcodecs)
+
+add_executable(read_pbm_file examples/read_pbm_file.c)
+
+target_link_libraries(read_pbm_file PRIVATE imgcodecs)
+
+
 
 
 
