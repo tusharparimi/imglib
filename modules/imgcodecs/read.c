@@ -4,7 +4,7 @@
 #include <string.h>
 
 Image *read_pbm(const char *filename){
-    FILE *fptr = fopen(filename, "rb");
+    FILE *fptr = fopen(filename, "r");
     if (fptr == NULL){
         printf("Error opening file\n");
         return NULL;
@@ -16,6 +16,7 @@ Image *read_pbm(const char *filename){
         printf("Unsupported file format\n");
         return NULL;
     }
+    printf("file_format: %s\n", format);
 
     int width, height;
     if (fscanf(fptr, "%d %d", &width, &height) != 2){
@@ -27,6 +28,7 @@ Image *read_pbm(const char *filename){
     fgetc(fptr);
 
     int pixel_count = width * height;
+    printf("width: %d, height: %d, pixel_count: %d\n", width, height, pixel_count);
     unsigned char *data = (unsigned char *)malloc(pixel_count);
     if (data == NULL){
         fclose(fptr);
@@ -34,12 +36,24 @@ Image *read_pbm(const char *filename){
         return NULL;
     }
 
-    if (fread(data, sizeof(int), pixel_count, fptr) != pixel_count){
-        free(data);
-        fclose(fptr);
-        pritnf("Failed to read image data\n");
-        return NULL;
+    // if (fread(data, sizeof(unsigned char), pixel_count, fptr) != pixel_count){
+    //     free(data);
+    //     fclose(fptr);
+    //     printf("Failed to read image data\n");
+    //     return NULL;
+    // }
+    unsigned char c;
+    int i = 0;
+    while((c = fgetc(fptr)) != EOF && i < pixel_count){
+        printf("%c", c);
+        if (c == '\n' || c == ' '){
+            continue;
+        }
+        *(data + i) = c;
+        i++;    
     }
+    // printf("\n%d\n", i);
+    printf("\n");
     
     fclose(fptr);
 
