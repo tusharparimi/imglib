@@ -2,6 +2,7 @@
 #define READ_H
 
 #include "imglib.h"
-Image *read_ppm(const char *filename);
+
+Image *read_pbm(const char *filename);
 
 #endif
