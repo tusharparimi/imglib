@@ -49,7 +49,7 @@ Image *read_pbm(const char *filename){
         if (c == '\n' || c == ' '){
             continue;
         }
-        *(data + i) = c;
+        *(data + i) = c - '0';
         i++;    
     }
     // printf("\n%d\n", i);
