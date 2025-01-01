@@ -15,11 +15,13 @@ set(HEADERS
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 add_subdirectory(modules/imgcodecs)
+add_subdirectory(modules/core)
 
 add_executable(read_pbm_file examples/read_pbm_file.c)
+target_link_libraries(read_pbm_file PRIVATE core imgcodecs)
 
-target_link_libraries(read_pbm_file PRIVATE imgcodecs)
-
+add_library(imglib INTERFACE)
+target_link_libraries(imglib INTERFACE core imgcodecs)
 
 
 
