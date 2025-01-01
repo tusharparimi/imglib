@@ -21,6 +21,9 @@ add_subdirectory(modules/highgui)
 add_executable(read_pbm_file examples/read_pbm_file.c)
 target_link_libraries(read_pbm_file PRIVATE core imgcodecs highgui)
 
+add_executable(pixel_display examples/pixel_display.c)
+target_link_libraries(pixel_display PRIVATE core imgcodecs highgui)
+
 add_library(imglib INTERFACE)
 target_link_libraries(imglib INTERFACE core imgcodecs highgui)
 

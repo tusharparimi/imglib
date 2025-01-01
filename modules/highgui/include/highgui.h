@@ -1,6 +1,6 @@
 #ifndef HIGHGUI_H
 #define HIGHGUI_H
 
-#include "../display.h"
+#include "../wind.h"
 
 #endif
