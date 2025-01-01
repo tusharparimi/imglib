@@ -16,7 +16,7 @@ Image *read_pbm(const char *filename){
         printf("Unsupported file format\n");
         return NULL;
     }
-    printf("file_format: %s\n", format);
+    // printf("file_format: %s\n", format);
 
     int width, height;
     if (fscanf(fptr, "%d %d", &width, &height) != 2){
@@ -28,7 +28,7 @@ Image *read_pbm(const char *filename){
     fgetc(fptr);
 
     int pixel_count = width * height;
-    printf("width: %d, height: %d, pixel_count: %d\n", width, height, pixel_count);
+    // printf("width: %d, height: %d, pixel_count: %d\n", width, height, pixel_count);
     unsigned char *data = (unsigned char *)malloc(pixel_count);
     if (data == NULL){
         fclose(fptr);
@@ -45,7 +45,7 @@ Image *read_pbm(const char *filename){
     unsigned char c;
     int i = 0;
     while((c = fgetc(fptr)) != EOF && i < pixel_count){
-        printf("%c", c);
+        // printf("%c", c);
         if (c == '\n' || c == ' '){
             continue;
         }
@@ -53,7 +53,7 @@ Image *read_pbm(const char *filename){
         i++;    
     }
     // printf("\n%d\n", i);
-    printf("\n");
+    // printf("\n");
     
     fclose(fptr);
 
