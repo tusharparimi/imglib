@@ -22,7 +22,7 @@ int main() {
     }
 
 
-    if (!InitializeWindow(image->width, image->height)) {
+    if (!InitializeWindow(image->width, image->height, "My image")) {
         return 0;
     }
 

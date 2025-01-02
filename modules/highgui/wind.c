@@ -15,7 +15,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     }
 }
 
-int InitializeWindow(int width, int height) {
+int InitializeWindow(int width, int height, char *windowName) {
     const char CLASS_NAME[] = "PixelWindowClass";
 
     HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -33,7 +33,7 @@ int InitializeWindow(int width, int height) {
     hwnd = CreateWindowEx(
         0,                            // Optional window styles
         CLASS_NAME,                   // Window class
-        "Pixel Window",              // Window text
+        windowName,              // Window text
         WS_OVERLAPPEDWINDOW,          // Window style
         CW_USEDEFAULT, CW_USEDEFAULT, width, height, // Size and position
         NULL,                         // Parent window
