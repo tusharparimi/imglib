@@ -1,5 +1,9 @@
 #include "wind.h"
 #include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
+
+#define MAX_WINDOWS 1
 
 // Library Interface
 static HWND hwnd = NULL;
@@ -7,15 +11,45 @@ static HDC hdc = NULL;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
-        case WM_DESTROY:
-            PostQuitMessage(0);
-            return 0;
-        default:
-            return DefWindowProc(hwnd, uMsg, wParam, lParam);
+    case WM_PAINT: {
+        PAINTSTRUCT ps;
+        HDC hdc = BeginPaint(hwnd, &ps);
+
+        // Retrieve ImageData pointer
+        Image *image = (Image *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+        // printf("%d %d\n", image->width, image->height);
+        unsigned char *pixelData = img2pixelData(image);
+
+        if (image && pixelData) {
+            BITMAPINFO bmi = { 0 };
+            bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+            bmi.bmiHeader.biWidth = image->width;
+            bmi.bmiHeader.biHeight = -image->height; // Negative to flip vertically
+            bmi.bmiHeader.biPlanes = 1;
+            bmi.bmiHeader.biBitCount = 24;
+            bmi.bmiHeader.biCompression = BI_RGB;
+
+            StretchDIBits(hdc,
+                0, 0, image->width, image->height,   // Destination
+                0, 0, image->width, image->height,   // Source
+                pixelData, &bmi, DIB_RGB_COLORS, SRCCOPY);
+        }
+
+        EndPaint(hwnd, &ps);
+        return 0;
+    }
+    case WM_DESTROY: {
+        PostQuitMessage(0);
+        return 0;
+    }
+    default: {
+        return DefWindowProc(hwnd, uMsg, wParam, lParam);
     }
 }
+}
 
-int InitializeWindow(int width, int height, char *windowName) {
+int DisplayImage(Image *image, char *windowName) {
+    
     const char CLASS_NAME[] = "PixelWindowClass";
 
     HINSTANCE hInstance = GetModuleHandle(NULL);
@@ -35,7 +69,7 @@ int InitializeWindow(int width, int height, char *windowName) {
         CLASS_NAME,                   // Window class
         windowName,              // Window text
         WS_OVERLAPPEDWINDOW,          // Window style
-        CW_USEDEFAULT, CW_USEDEFAULT, width, height, // Size and position
+        CW_USEDEFAULT, CW_USEDEFAULT, image->width, image->height, // Size and position
         NULL,                         // Parent window
         NULL,                         // Menu
         hInstance,                    // Instance handle
@@ -46,8 +80,18 @@ int InitializeWindow(int width, int height, char *windowName) {
         return 0;
     }
 
+    SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)image);
+
     ShowWindow(hwnd, SW_SHOW);
+
+    MSG msg = { 0 };
+    while (GetMessage(&msg, NULL, 0, 0)) {
+        TranslateMessage(&msg);
+        DispatchMessage(&msg);
+    }
+
     hdc = GetDC(hwnd);
+
     return 1;
 }
 
@@ -62,46 +106,6 @@ void CleanupWindow() {
     }
     UnregisterClass("PixelWindowClass", GetModuleHandle(NULL));
 }
-
-void DrawPixel(int x, int y, COLORREF color) {
-    if (hdc) {
-        SetPixel(hdc, x, y, color);
-    }
-}
-
-int ProcessMessages() {
-    MSG msg = {0};
-    while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-        if (msg.message == WM_QUIT) {
-            return 0;
-        }
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
-    return 1;
-}
-
-// Example of usage (can be moved to a test program)
-/*
-int main() {
-    if (!InitializeWindow(800, 600)) {
-        return 0;
-    }
-
-    for (int x = 100; x < 200; x++) {
-        for (int y = 100; y < 200; y++) {
-            DrawPixel(x, y, RGB(255, 0, 0)); // Red color
-        }
-    }
-
-    while (ProcessMessages()) {
-        // Keep the window running
-    }
-
-    CleanupWindow();
-    return 0;
-}
-*/
 
 
 

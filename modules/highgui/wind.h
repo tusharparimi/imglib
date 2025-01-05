@@ -4,9 +4,7 @@
 #include "core.h"
 #include <windows.h>
 
-int InitializeWindow(int width, int height, char *windowName);
+int DisplayImage(Image *image, char *windowName);
 void CleanupWindow();
-void DrawPixel(int x, int y, COLORREF color);
-int ProcessMessages();
 
 #endif
