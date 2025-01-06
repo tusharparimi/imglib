@@ -48,9 +48,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
 }
 }
 
-int DisplayImage(Image *image, char *windowName) {
+int DisplayImage(Image *image, wchar_t *windowName) {
     
-    const char CLASS_NAME[] = "PixelWindowClass";
+    const wchar_t CLASS_NAME[] = L"PixelWindowClass";
 
     HINSTANCE hInstance = GetModuleHandle(NULL);
 
@@ -64,7 +64,7 @@ int DisplayImage(Image *image, char *windowName) {
         return 0;
     }
 
-    hwnd = CreateWindowEx(
+    hwnd = CreateWindowExW(
         0,                            // Optional window styles
         CLASS_NAME,                   // Window class
         windowName,              // Window text
@@ -104,7 +104,7 @@ void CleanupWindow() {
         DestroyWindow(hwnd);
         hwnd = NULL;
     }
-    UnregisterClass("PixelWindowClass", GetModuleHandle(NULL));
+    UnregisterClass(L"PixelWindowClass", GetModuleHandle(NULL));
 }
 
 

@@ -29,10 +29,10 @@ int main() {
 
     printf("width: %d, height: %d\n", image1->width, image1->height);
 
-    DisplayImage(image, "First image");
+    DisplayImage(image, L"First image");
     CleanupWindow();
 
-    DisplayImage(image1, "Second image");
+    DisplayImage(image1, L"Second image");
     CleanupWindow();
 
     return 0;
