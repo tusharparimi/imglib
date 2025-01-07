@@ -3,21 +3,29 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define MAX_WINDOWS 1
+// #define MAX_WINDOWS 1
 
 // Library Interface
 static HWND hwnd = NULL;
 static HDC hdc = NULL;
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
+    Image *image;
+    if(uMsg == WM_CREATE) {
+        CREATESTRUCT *pCreate = (CREATESTRUCT *)lParam;
+        image = (Image *)(pCreate->lpCreateParams);
+        SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)image);
+    }
+    else {
+        image = (Image *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
+    }
+
+
     switch (uMsg) {
     case WM_PAINT: {
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
-        // Retrieve ImageData pointer
-        Image *image = (Image *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
-        // printf("%d %d\n", image->width, image->height);
         unsigned char *pixelData = img2pixelData(image);
 
         if (image && pixelData) {
@@ -67,20 +75,19 @@ int DisplayImage(Image *image, wchar_t *windowName) {
     hwnd = CreateWindowExW(
         0,                            // Optional window styles
         CLASS_NAME,                   // Window class
-        windowName,              // Window text
+        windowName,                   // Window text
         WS_OVERLAPPEDWINDOW,          // Window style
         CW_USEDEFAULT, CW_USEDEFAULT, image->width, image->height, // Size and position
         NULL,                         // Parent window
         NULL,                         // Menu
         hInstance,                    // Instance handle
-        NULL                          // Additional application data
+        image                          // Additional application data
     );
 
     if (!hwnd) {
         return 0;
     }
 
-    SetWindowLongPtr(hwnd, GWLP_USERDATA, (LONG_PTR)image);
 
     ShowWindow(hwnd, SW_SHOW);
 
