@@ -3,7 +3,7 @@
 #include <stdio.h>
 
 
-int main() {
+int main(int argc, char *argv[]) {
 
     const char *filename = 
     "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\enlarged_j_ascii.pbm";
@@ -30,10 +30,10 @@ int main() {
     printf("width: %d, height: %d\n", image1->width, image1->height);
 
     DisplayImage(image, L"First image");
-    CleanupWindow();
+    WaitKey(8000);
 
     DisplayImage(image1, L"Second image");
-    CleanupWindow();
+    WaitKey(8000);
 
     return 0;
 }

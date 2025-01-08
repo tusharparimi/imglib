@@ -3,8 +3,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-// #define MAX_WINDOWS 1
-
 // Library Interface
 static HWND hwnd = NULL;
 static HDC hdc = NULL;
@@ -19,7 +17,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
     else {
         image = (Image *)GetWindowLongPtr(hwnd, GWLP_USERDATA);
     }
-
 
     switch (uMsg) {
     case WM_PAINT: {
@@ -44,6 +41,14 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         }
 
         EndPaint(hwnd, &ps);
+        return 0;
+    }
+    case WM_KEYDOWN: {
+        CleanupWindow();
+        return 0;
+    }
+    case WM_CLOSE: {
+        CleanupWindow();
         return 0;
     }
     case WM_DESTROY: {
@@ -81,25 +86,46 @@ int DisplayImage(Image *image, wchar_t *windowName) {
         NULL,                         // Parent window
         NULL,                         // Menu
         hInstance,                    // Instance handle
-        image                          // Additional application data
+        image                         // Additional application data
     );
 
     if (!hwnd) {
         return 0;
     }
 
-
     ShowWindow(hwnd, SW_SHOW);
-
-    MSG msg = { 0 };
-    while (GetMessage(&msg, NULL, 0, 0)) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-    }
-
     hdc = GetDC(hwnd);
 
     return 1;
+}
+
+int WaitKey(int delay) {
+    MSG msg = { 0 };
+
+    if (delay <= 0) {
+        while (GetMessage(&msg, NULL, 0, 0)) {
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
+        }
+        CleanupWindow();
+    }
+    else {
+        DWORD startTime = GetTickCount();
+        while (hwnd) {
+            printf("current delay: %ul\n", GetTickCount() - startTime);
+            if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+
+            if (GetTickCount() - startTime >= (DWORD)delay) {
+                CleanupWindow();
+                return 0;
+            }  
+        }
+    }
+
+    return 0;
 }
 
 void CleanupWindow() {

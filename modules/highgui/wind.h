@@ -8,6 +8,7 @@
 #include <windows.h>
 
 int DisplayImage(Image *image, wchar_t *windowName);
+int WaitKey(int delay);
 void CleanupWindow();
 
 #endif
