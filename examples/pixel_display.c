@@ -30,10 +30,9 @@ int main(int argc, char *argv[]) {
     printf("width: %d, height: %d\n", image1->width, image1->height);
 
     DisplayImage(image, L"First image");
-    WaitKey(8000);
-
     DisplayImage(image1, L"Second image");
-    WaitKey(8000);
+    DisplayImage(image, L"First image copy");
+    WaitKey(0);
 
     return 0;
 }
