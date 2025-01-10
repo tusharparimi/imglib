@@ -1,6 +1,6 @@
 /* 
 Epilepsy Warning: 
-Carefully if you are photosensitive, flashing lights ahead
+Careful if you are photosensitive, flashing lights ahead. :)
 */
 
 #include "highgui.h"
