@@ -23,5 +23,7 @@ int main(){
         printf("%3u ", *(image->data + i));
     }
 
+    free(image);
+
     return 0;
 }
