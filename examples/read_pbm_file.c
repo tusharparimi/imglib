@@ -16,21 +16,12 @@ int main(){
 
     printf("width: %d, height: %d", image->width, image->height);
     printf("\ndata:\n");
-    for (int i = 0; i < image->width * image->height; i++){
-        printf("%u ", *(image->data + i));
+    for (int i = 0; i < image->width * image->height * 3; i++) {
+        if (i % 18 == 0) {
+            printf("\n");
+        }
+        printf("%3u ", *(image->data + i));
     }
-
-    unsigned char *pixelData = img2pixelData(image);
-    if (pixelData == NULL) {
-        exit(0);
-    }
-
-    printf("\npixelated data:\n");
-    for (int i = 0; i < image->width * image->height * 3; i++){
-        printf("%u ", *(pixelData + i));
-    }
-
-    free(pixelData);
 
     return 0;
 }

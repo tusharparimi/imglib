@@ -7,6 +7,6 @@ typedef struct {
     unsigned char *data;
 } Image;
 
-unsigned char *img2pixelData(Image *image);
+unsigned char *img2pixelData(int width, int height, unsigned char *data);
 
 #endif

@@ -27,7 +27,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
-        unsigned char *pixelData = img2pixelData(image);
+        unsigned char *pixelData = image->data;
 
         if (image && pixelData) {
             BITMAPINFO bmi = { 0 };
@@ -45,7 +45,6 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         }
 
         EndPaint(hwnd, &ps);
-        free(pixelData);
         return 0;
     }
     case WM_KEYDOWN: {
