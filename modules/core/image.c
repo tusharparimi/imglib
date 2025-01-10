@@ -9,6 +9,7 @@ unsigned char *img2pixelData(Image *image) {
     unsigned char *pixelData = (unsigned char *)malloc(w * h * 3 * sizeof(unsigned char));
     // printf("Here\n");
     if (pixelData == NULL) {
+        free(pixelData);
         printf("Memory not allocated.\n");
         return NULL;
     }
