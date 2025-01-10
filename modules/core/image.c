@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-unsigned char *img2pixelData(int width, int height, unsigned char *data) {
+unsigned char *ascii2pixelData(int width, int height, unsigned char *data) {
     int w = width;
     int h = height;
     unsigned char *pixelData = (unsigned char *)malloc(w * h * 3 * sizeof(unsigned char));

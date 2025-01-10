@@ -21,7 +21,7 @@ unsigned char *decode_pbm_P1_data(FILE *fptr, int width, int height) {
         i++;    
     }
     
-    unsigned char *pixelData = img2pixelData(width, height, data);
+    unsigned char *pixelData = ascii2pixelData(width, height, data);
     free(data);
 
     return pixelData;
