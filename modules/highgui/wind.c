@@ -152,8 +152,8 @@ int DisplayImage(Image *image, wchar_t *windowName) {
     ShowWindow(dHandles[numHandles - 1].hwnd, SW_SHOW);
     dHandles[numHandles - 1].hdc = GetDC(dHandles[numHandles - 1].hwnd);
 
-    printf("capacity: %d, numHandles: %d\n", capacity, numHandles);
-    printf("id: %d, winname: %ws\n", numHandles - 1, dHandles[numHandles - 1].winname);
+    // printf("capacity: %d, numHandles: %d\n", capacity, numHandles);
+    // printf("id: %d, winname: %ws\n", numHandles - 1, dHandles[numHandles - 1].winname);
 
     return 0;
 }
