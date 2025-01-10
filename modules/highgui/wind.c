@@ -178,6 +178,9 @@ int WaitKey(int delay) {
                 if (msg.message == WM_CLOSE || msg.message == WM_KEYDOWN) {
                     break;
                 }
+            }
+            if (!AnyWindowHandle()) {
+                break;
             }    
         }
     }
@@ -191,9 +194,11 @@ int WaitKey(int delay) {
                     break;
                 }
             }
-
             if (GetTickCount() - startTime >= (DWORD)delay) {
                 return 0;
+            }
+            if (!AnyWindowHandle()) {
+                break;
             }  
         }
     }
