@@ -45,10 +45,13 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         }
 
         EndPaint(hwnd, &ps);
+        free(pixelData);
         return 0;
     }
     case WM_KEYDOWN: {
-        CleanupWindowAll();
+        InvalidateRect(hwnd, NULL, TRUE); // Force window repaint
+        UpdateWindow(hwnd);              // Immediately process WM_PAINT
+
         return 0;
     }
     case WM_CLOSE: {
@@ -69,6 +72,7 @@ void InitializeDisplayHandles() {
     dHandles = (DisplayHandle *)malloc(capacity * sizeof(DisplayHandle));
     if (dHandles == NULL) {
         printf("Display handles array, memory allocation fails\n");
+        free(dHandles);
         exit(1);
     }
 
@@ -86,13 +90,30 @@ void InitializeDisplayHandles() {
     wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 
     if (!RegisterClass(&wc)) {
+        free(dHandles);
         exit(1);
     }
 }
 
 int DisplayImage(Image *image, wchar_t *windowName) {
 
-    printf("capacity: %d, numHandles: %d\n", capacity, numHandles);
+    int windowPresent = 0;
+    int windowIndex = -1;
+
+    for (int i = 0; i < numHandles; i++) {
+        if (dHandles[i].winname == windowName) {
+            windowPresent = 1;
+            windowIndex = i;
+        }
+    }
+
+    if (windowPresent) {
+        SetWindowLongPtr(dHandles[windowIndex].hwnd, GWLP_USERDATA, (LONG_PTR)image);
+        InvalidateRect(dHandles[windowIndex].hwnd, NULL, TRUE); // Force window repaint
+        UpdateWindow(dHandles[windowIndex].hwnd);              // Immediately process WM_PAINT
+
+        return 0;
+    }
 
     if (firstHandle == 0) {
         InitializeDisplayHandles();
@@ -102,7 +123,13 @@ int DisplayImage(Image *image, wchar_t *windowName) {
     numHandles++;
     if (numHandles == capacity - 1) {
         capacity = 2 * capacity;
-        dHandles = realloc(dHandles, capacity * sizeof(DisplayHandle));
+        DisplayHandle *temp = realloc(dHandles, capacity * sizeof(DisplayHandle));
+        if (!dHandles) {
+            printf("Memory realloc failed\n");
+            free(dHandles);
+            exit(1);
+        }
+        dHandles = temp;
     }
 
     dHandles[numHandles - 1].winname = windowName;
@@ -119,15 +146,16 @@ int DisplayImage(Image *image, wchar_t *windowName) {
     );
 
     if (!dHandles[numHandles - 1].hwnd) {
-        return 0;
+        return 1;
     }
 
     ShowWindow(dHandles[numHandles - 1].hwnd, SW_SHOW);
     dHandles[numHandles - 1].hdc = GetDC(dHandles[numHandles - 1].hwnd);
 
+    printf("capacity: %d, numHandles: %d\n", capacity, numHandles);
     printf("id: %d, winname: %ws\n", numHandles - 1, dHandles[numHandles - 1].winname);
 
-    return 1;
+    return 0;
 }
 
 int AnyWindowHandle() {
@@ -143,25 +171,28 @@ int WaitKey(int delay) {
     MSG msg = { 0 };
 
     if (delay <= 0) {
-        while (AnyWindowHandle()) { // GetMessage(&msg, NULL, 0, 0)
+        while (1) {
             if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
+                if (msg.message == WM_CLOSE || msg.message == WM_KEYDOWN) {
+                    break;
+                }
             }    
         }
-        CleanupWindowAll();
     }
     else {
         DWORD startTime = GetTickCount();
-        while (AnyWindowHandle()) {
-            // printf("current delay: %ul\n", GetTickCount() - startTime);
+        while (1) {
             if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
                 TranslateMessage(&msg);
                 DispatchMessage(&msg);
+                if (msg.message == WM_CLOSE || msg.message == WM_KEYDOWN) {
+                    break;
+                }
             }
 
             if (GetTickCount() - startTime >= (DWORD)delay) {
-                CleanupWindowAll();
                 return 0;
             }  
         }
@@ -177,20 +208,17 @@ void CleanupWindow(HWND hwnd) {
             break;
         }
     }
-
     if (dHandles[i].hdc) {
         ReleaseDC(dHandles[i].hwnd, dHandles[i].hdc);
         dHandles[i].hdc = NULL;
     }
-
     if (dHandles[i].hwnd) {
         DestroyWindow(dHandles[i].hwnd);
         dHandles[i].hwnd = NULL;
     }
-    // UnregisterClass(L"PixelWindowClass", GetModuleHandle(NULL));
 }
 
-void CleanupWindowAll() {
+void DestroyAllWindows() {
     for (int i = 0; i < numHandles; i++) {
         if (dHandles[i].hdc) {
             ReleaseDC(dHandles[i].hwnd, dHandles[i].hdc);
@@ -200,8 +228,20 @@ void CleanupWindowAll() {
             DestroyWindow(dHandles[i].hwnd);
             dHandles[i].hwnd = NULL;
         }
-        UnregisterClass(L"PixelWindowClass", GetModuleHandle(NULL));
+        dHandles[i].winname = NULL;
     }
+    UnregisterClass(L"PixelWindowClass", GetModuleHandle(NULL));
+    free(dHandles);
+    firstHandle = 0;
+    numHandles = 0;
+}
+
+void PrintActiveWindows() {
+    printf("Active windows : ");
+    for (int i = 0; i < numHandles; i++) {
+        printf("%ws, ", dHandles[i].winname);
+    }
+    printf("\n");
 }
 
     

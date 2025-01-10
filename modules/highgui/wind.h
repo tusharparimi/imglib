@@ -16,6 +16,7 @@ typedef struct {
 int DisplayImage(Image *image, wchar_t *windowName);
 int WaitKey(int delay);
 void CleanupWindow(HWND hwnd);
-void CleanupWindowAll();
+void DestroyAllWindows();
+void PrintActiveWindows();
 
 #endif
