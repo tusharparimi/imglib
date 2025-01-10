@@ -14,13 +14,20 @@ unsigned char *decode_pbm_P1_data(FILE *fptr, int width, int height) {
     unsigned char c;
     int i = 0;
     while((c = fgetc(fptr)) != EOF && i < (width * height)){
-        if (c == '\n' || c == ' '){
+    // while((c = fgetc(fptr)) != EOF){
+        if (c == '\n' || c == ' ' || c == '\r'){
+            // if (c == '\n') {printf("char: newline\n");}
+            // if (c == '\r') {printf("char: carraige\n");}
+            // if (c == ' ') {printf("char: space\n");}
             continue;
         }
+        // printf("char: %c ", c);
         *(data + i) = c - '0';
-        i++;    
+        i++;
+        // printf("%d\n", i);    
     }
-    
+    printf("\n");
+
     unsigned char *pixelData = ascii2pixelData(width, height, data);
     free(data);
 
@@ -29,7 +36,7 @@ unsigned char *decode_pbm_P1_data(FILE *fptr, int width, int height) {
 
 
 Image *read_pbm(const char *filename){
-    FILE *fptr = fopen(filename, "r");
+    FILE *fptr = fopen(filename, "rb");
     if (fptr == NULL){
         printf("Error opening file\n");
         return NULL;
