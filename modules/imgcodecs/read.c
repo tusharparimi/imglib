@@ -34,6 +34,27 @@ unsigned char *decode_pbm_P1_data(FILE *fptr, int width, int height) {
     return pixelData;
 }
 
+unsigned char *decode_pbm_P4_data(FILE *fptr, int width, int height) {
+    int bytes_per_row = (width + 7) / 8;
+    unsigned char *bytes = (unsigned char *)malloc(sizeof(unsigned char) * bytes_per_row * height);
+    if (bytes == NULL) {
+        fclose(fptr);
+        printf("Failed to allocate memory for bytes\n");
+        return NULL;
+    }
+
+    if (fread(bytes, sizeof(unsigned char), bytes_per_row * height, fptr) != bytes_per_row * height) {
+        fclose(fptr);
+        printf("Failed to read bytes\n");
+        return NULL;
+    }
+
+    unsigned char *pixelData = binary2pixelData(width, height, bytes);
+    free(bytes);
+
+    return pixelData;
+}
+
 
 Image *read_pbm(const char *filename){
     FILE *fptr = fopen(filename, "rb");
@@ -55,6 +76,7 @@ Image *read_pbm(const char *filename){
         printf("Invalid file header\n");
         return NULL;
     }
+    printf("%d %d\n", width, height);
 
     int pixel_count = width * height;
     fgetc(fptr);
@@ -65,9 +87,10 @@ Image *read_pbm(const char *filename){
     }
 
     else if (strcmp(format, "P4") == 0) {
-        printf("read for P4 format Not Implemented\n");
-        fclose(fptr);
-        return NULL;
+        // printf("read for P4 format Not Implemented\n");
+        // fclose(fptr);
+        // return NULL;
+        pixelData = decode_pbm_P4_data(fptr, width, height);
     }
     
     fclose(fptr);

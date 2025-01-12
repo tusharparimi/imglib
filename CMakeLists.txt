@@ -24,6 +24,12 @@ target_link_libraries(read_pbm_file PRIVATE core imgcodecs highgui)
 add_executable(pixel_display examples/pixel_display.c)
 target_link_libraries(pixel_display PRIVATE core imgcodecs highgui)
 
+add_executable(p4_pbm_display examples/p4_pbm_display.c)
+target_link_libraries(p4_pbm_display PRIVATE core imgcodecs highgui)
+
+add_executable(p4_pbm_comment examples/p4_pbm_comment.c)
+target_link_libraries(p4_pbm_comment PRIVATE core imgcodecs highgui)
+
 add_executable(display_loop examples/display_loop.c)
 target_link_libraries(display_loop PRIVATE core imgcodecs highgui)
 
