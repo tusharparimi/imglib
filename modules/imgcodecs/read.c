@@ -70,6 +70,18 @@ Image *read_pbm(const char *filename){
         return NULL;
     }
 
+    unsigned char c = fgetc(fptr);
+    printf("%c", c);
+    // c = fgetc(fptr);
+    // printf("%c", c);
+    while ((c = fgetc(fptr)) == '#' || c == ' ' || c == '\n') {
+        if (c == '#' || c == ' ') {
+            while (fgetc(fptr) != '\n') {}
+        }
+    }
+    ungetc(c, fptr);
+
+
     int width, height;
     if (fscanf(fptr, "%d %d", &width, &height) != 2){
         fclose(fptr);
