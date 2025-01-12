@@ -131,13 +131,24 @@ int DisplayImage(Image *image, wchar_t *windowName) {
         dHandles = temp;
     }
 
+    // Rectangle for client area
+    RECT rect = {0, 0, image->width, image->height};
+    // Adjust the window size to include non-client areas
+    if (!AdjustWindowRectEx(&rect, WS_OVERLAPPEDWINDOW, FALSE, 0)) {
+        printf("Failed to adjust window rectangle. Error: %ld\n", GetLastError());
+        return 1;
+    }
+    // Adjusted width and height
+    int width = rect.right - rect.left;
+    int height = rect.bottom - rect.top;
+
     dHandles[numHandles - 1].winname = windowName;
     dHandles[numHandles - 1].hwnd = CreateWindowExW(
         0,                            // Optional window styles
         CLASS_NAME,                   // Window class
         windowName,                   // Window text
         WS_OVERLAPPEDWINDOW,          // Window style
-        CW_USEDEFAULT, CW_USEDEFAULT, image->width, image->height, // Size and position
+        CW_USEDEFAULT, CW_USEDEFAULT, width, height, // Size and position
         NULL,                         // Parent window
         NULL,                         // Menu
         hInstance,                    // Instance handle
