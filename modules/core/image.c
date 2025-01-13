@@ -15,9 +15,10 @@ unsigned char *ascii2pixelData(int width, int height, unsigned char *data) {
 
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) { 
-            pixelData[((y * w) + x) * 3 + 0] = data[(y * w) + x] * 255;
-            pixelData[((y * w) + x) * 3 + 1] = data[(y * w) + x] * 255;
-            pixelData[((y * w) + x) * 3 + 2] = data[(y * w) + x] * 255;
+            //ternary operator used to reverse 0s and 1s, in pbm  0 is white and 1 is black
+            pixelData[((y * w) + x) * 3 + 0] = (data[(y * w) + x] == 0 ? 1 : 0) * 255;
+            pixelData[((y * w) + x) * 3 + 1] = (data[(y * w) + x] == 0 ? 1 : 0) * 255;
+            pixelData[((y * w) + x) * 3 + 2] = (data[(y * w) + x] == 0 ? 1 : 0) * 255;
         }
     }
 
@@ -46,9 +47,10 @@ unsigned char *binary2pixelData(int width, int height, unsigned char *bytes) {
             unsigned char pixel = (byte >> (7 - bit_index)) & 1;
             // printf("%u\n", pixel);
 
-            pixelData[((y * width) + x) * 3 + 0] = pixel * 255;
-            pixelData[((y * width) + x) * 3 + 1] = pixel * 255;
-            pixelData[((y * width) + x) * 3 + 2] = pixel * 255;
+            //ternary operator used to reverse 0s and 1s, in pbm  0 is white and 1 is black
+            pixelData[((y * width) + x) * 3 + 0] = (pixel == 0 ? 1 : 0) * 255;
+            pixelData[((y * width) + x) * 3 + 1] = (pixel == 0 ? 1 : 0) * 255;
+            pixelData[((y * width) + x) * 3 + 2] = (pixel == 0 ? 1 : 0) * 255;
 
         }
     }
