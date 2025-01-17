@@ -51,7 +51,7 @@ unsigned char *binary2pixelData(int width, int height, unsigned char *bytes) {
     int w = width;
     int h = height;
     int bytes_per_row = (w + 7) / 8;
-    int last_byte_num_pixels = (w % 8);
+    // int last_byte_num_pixels = (w % 8);
     unsigned char *pixelData = (unsigned char *)malloc(w * h * 3 * sizeof(unsigned char));
 
     if (pixelData == NULL) {
