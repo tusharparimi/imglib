@@ -53,6 +53,7 @@ unsigned char *decode_pbm_P4_data(FILE *fptr, int width, int height) {
     free(bytes);
 
     return pixelData;
+
 }
 
 
@@ -81,7 +82,6 @@ Image *read_pbm(const char *filename){
     }
     ungetc(c, fptr);
 
-
     int width, height;
     if (fscanf(fptr, "%d %d", &width, &height) != 2){
         fclose(fptr);
@@ -92,6 +92,7 @@ Image *read_pbm(const char *filename){
 
     int pixel_count = width * height;
     fgetc(fptr);
+    // printf("Here: %d\n", fgetc(fptr));
     unsigned char *pixelData;
 
     if (strcmp(format, "P1") == 0) {
