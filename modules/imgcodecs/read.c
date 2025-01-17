@@ -28,7 +28,7 @@ unsigned char *decode_pbm_P1_data(FILE *fptr, int width, int height) {
     }
     printf("\n");
 
-    unsigned char *pixelData = ascii2pixelData(width, height, data);
+    unsigned char *pixelData = ascii2pixelData(width, height, data, "P1", 0);
     free(data);
 
     return pixelData;
@@ -54,6 +54,39 @@ unsigned char *decode_pbm_P4_data(FILE *fptr, int width, int height) {
 
     return pixelData;
 
+}
+
+unsigned char *decode_pgm_P2_data(FILE *fptr, int width, int height, int max_value) {
+    unsigned char *data = (unsigned char *)malloc(width * height);
+    if (data == NULL){
+        fclose(fptr);
+        printf("Failed to allocate memory for image data\n");
+        return NULL;
+    }
+
+    unsigned char val;
+    int c;
+    int i = 0;
+    while((c = fgetc(fptr)) != EOF){
+        if (c == '\n' || c == ' ' || c == '\r'){
+            continue;
+        }
+        ungetc(c, fptr);
+        if (fscanf(fptr, "%hhu", &val) != 1) {
+            fclose(fptr);
+            printf("Error reading data from file\n");
+            return NULL;
+        }
+        // printf("%u ", val);
+        *(data + i) = val;
+        i++;
+    }
+    // printf("\n\n");
+
+    unsigned char *pixelData = ascii2pixelData(width, height, data, "P2", max_value);
+    free(data);
+
+    return pixelData;
 }
 
 
@@ -107,6 +140,79 @@ Image *read_pbm(const char *filename){
     }
     
     fclose(fptr);
+
+    Image *image = (Image *)malloc(sizeof(Image));
+    if (image == NULL){
+        free(pixelData);
+        printf("Failed to allocate memory for image structure\n");
+        return NULL;
+    }
+
+    image->width = width;
+    image->height = height;
+    image->data = pixelData;
+    return image;
+
+}
+
+
+Image *read_pgm(const char *filename) {
+    FILE *fptr = fopen(filename, "rb");
+    if (fptr == NULL) {
+        printf("Error opening file\n");
+        return NULL;
+    }
+
+    char format[3];
+    if (fscanf(fptr, "%2s", format) != 1 || (strcmp(format, "P2") != 0 && strcmp(format, "P5") != 0)) {
+        fclose(fptr);
+        printf("Unsupported file format\n");
+        return NULL;
+    }
+
+    unsigned char c = fgetc(fptr);
+    printf("%c", c);
+    while ((c = fgetc(fptr)) == '#' || c == ' ' || c == '\n') {
+        if (c == '#' || c == ' ') {
+            while (fgetc(fptr) != '\n') {}
+        }
+    }
+    ungetc(c, fptr);
+
+    int width, height;
+    if (fscanf(fptr, "%d %d", &width, &height) != 2){
+        fclose(fptr);
+        printf("Invalid file header\n");
+        return NULL;
+    }
+    printf("%d %d\n", width, height);
+
+    int pixel_count = width * height;
+    fgetc(fptr);
+
+    int max_value;
+    if (fscanf(fptr, "%d", &max_value) != 1){
+        fclose(fptr);
+        printf("Invalid file header\n");
+        return NULL;
+    }
+    printf("%d\n", max_value);
+
+    fgetc(fptr);
+
+    unsigned char *pixelData;
+    if (strcmp(format, "P2") == 0) {
+        pixelData = decode_pgm_P2_data(fptr, width, height, max_value);
+    }
+
+    else if (strcmp(format, "P5") == 0) {
+        printf("P5 format not implemented yet\n");
+        fclose(fptr);
+        return NULL;
+        // pixelData = decode_pgm_P5_data(fptr, width, height);
+    }
+    
+    fclose(fptr);    
 
     Image *image = (Image *)malloc(sizeof(Image));
     if (image == NULL){

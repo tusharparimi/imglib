@@ -33,6 +33,13 @@ target_link_libraries(p4_pbm_comment PRIVATE core imgcodecs highgui)
 add_executable(display_loop examples/display_loop.c)
 target_link_libraries(display_loop PRIVATE core imgcodecs highgui)
 
+add_executable(display_pgm_P2 examples/display_pgm_P2.c)
+target_link_libraries(display_pgm_P2 PRIVATE core imgcodecs highgui)
+
+add_executable(read_pgm_file examples/read_pgm_file.c)
+target_link_libraries(read_pgm_file PRIVATE core imgcodecs highgui)
+
+
 add_library(imglib INTERFACE)
 target_link_libraries(imglib INTERFACE core imgcodecs highgui)
 
