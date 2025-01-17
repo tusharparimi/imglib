@@ -191,9 +191,9 @@ Image *read_pgm(const char *filename) {
     fgetc(fptr);
 
     int max_value;
-    if (fscanf(fptr, "%d", &max_value) != 1){
+    if (fscanf(fptr, "%d", &max_value) != 1 || max_value < 0 || max_value > 255) {
         fclose(fptr);
-        printf("Invalid file header\n");
+        printf("Invalid max val\n");
         return NULL;
     }
     printf("%d\n", max_value);
