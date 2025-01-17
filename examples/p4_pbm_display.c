@@ -6,7 +6,7 @@
 int main(int argc, char *argv[]) {
 
     const char *filename = 
-    "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\scs.pbm";
+    "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\pbm\\scs.pbm";
 
     Image *image;
     image = read_pbm(filename);

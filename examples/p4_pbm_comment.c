@@ -6,13 +6,13 @@
 int main(int argc, char *argv[]) {
 
     // const char *filename = 
-    // "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\letter_a.pbm";
+    // "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\pbm\\letter_a.pbm";
 
     const char *filename = 
-    "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\washington.pbm";
+    "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\pbm\\washington.pbm";
 
     // const char *filename = 
-    // "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\sierpinski.pbm";
+    // "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\pbm\\sierpinski.pbm";
 
     Image *image;
     image = read_pbm(filename);

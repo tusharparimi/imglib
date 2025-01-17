@@ -4,7 +4,7 @@
 
 int main(){
     const char *filename = 
-    "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\j.pbm";
+    "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\pbm\\j.pbm";
     printf("%s\n", filename); 
 
     Image *image;
@@ -26,7 +26,7 @@ int main(){
     free(image);
 
     const char *filename1 = 
-    "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\letter_a.pbm";
+    "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\pbm\\letter_a.pbm";
     printf("%s\n", filename1); 
 
     Image *image1;
