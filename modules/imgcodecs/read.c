@@ -89,6 +89,32 @@ unsigned char *decode_pgm_P2_data(FILE *fptr, int width, int height, int max_val
     return pixelData;
 }
 
+unsigned char *decode_pgm_P5_data(FILE *fptr, int width, int height, unsigned char max_value) {
+    // printf("bytes buffer size: %zd\n", sizeof(unsigned char) * ((width * height * 2) - 1));
+    // printf("bytes num elements: %d\n", ((width * height * 2) - 1));
+    unsigned char *bytes = (unsigned char *)malloc(sizeof(unsigned char) * width * height);
+    if (bytes == NULL) {
+        fclose(fptr);
+        printf("FAiled to allocate memory for pixelData\n");
+        return NULL;
+    }
+
+    if (fread(bytes, sizeof(unsigned char), width * height, fptr) != width * height) {
+        fclose(fptr);
+        printf("Failed to read pixelData\n");
+        return NULL;
+    }
+
+    // for (int i = 0; i < width*height; i++) {
+    //     printf("%hhu ", *(bytes + i));
+    // }
+    // printf("\n");
+
+    unsigned char *pixelData = P5_bytes2pixelData(width, height, bytes, max_value);
+
+    return pixelData;
+}
+
 
 Image *read_pbm(const char *filename){
     FILE *fptr = fopen(filename, "rb");
@@ -206,10 +232,10 @@ Image *read_pgm(const char *filename) {
     }
 
     else if (strcmp(format, "P5") == 0) {
-        printf("P5 format not implemented yet\n");
-        fclose(fptr);
-        return NULL;
-        // pixelData = decode_pgm_P5_data(fptr, width, height);
+        // printf("P5 format not implemented yet\n");
+        // fclose(fptr);
+        // return NULL;
+        pixelData = decode_pgm_P5_data(fptr, width, height, max_value);
     }
     
     fclose(fptr);    

@@ -92,3 +92,37 @@ unsigned char *binary2pixelData(int width, int height, unsigned char *bytes) {
 
     return pixelData;
 }
+
+unsigned char *P5_bytes2pixelData(int width, int height, unsigned char *bytes, unsigned char max_value) {
+
+    unsigned char *pixelData = (unsigned char *)malloc(width * height * 3 * sizeof(unsigned char));
+    if (pixelData == NULL) {
+        free(pixelData);
+        printf("Memory not allocated.\n");
+        return NULL;
+    }
+
+    // int i = 0;
+    // unsigned char val = 0;
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+            
+            // val = *(bytes + i);
+            // printf("%c\n", val);
+            // if (val == ' ') {
+            //     i++;
+            //     val = *(bytes + i);
+            //     // printf("new val: %c\n", val);
+            // }
+
+            pixelData[((y * width) + x) * 3 + 0] = ((bytes[(y * width) + x]) * 255) / max_value;
+            pixelData[((y * width) + x) * 3 + 1] = ((bytes[(y * width) + x]) * 255) / max_value;
+            pixelData[((y * width) + x) * 3 + 2] = ((bytes[(y * width) + x]) * 255) / max_value;
+
+        }
+    }
+
+    return pixelData;
+
+}
