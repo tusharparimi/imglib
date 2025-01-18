@@ -11,6 +11,19 @@ int firstHandle = 0;
 const wchar_t CLASS_NAME[] = L"PixelWindowClass";
 HINSTANCE hInstance;
 
+unsigned char *CreateAlignedBuffer(Image *image) {
+    // stride: num bytes per row after 4-byte alignment
+    int stride = ((image->width * 3 + 3) & ~3);
+    unsigned char *alignedData = (unsigned char *)calloc(1, stride * image->height);
+
+    for (int y = 0; y < image->height; y++) {
+        memcpy(alignedData + y * stride, image->data + y * (image->width * 3), image->width * 3);
+    }
+
+    return alignedData;
+
+}
+
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
     Image *image;
     if(uMsg == WM_CREATE) {
@@ -27,9 +40,9 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         PAINTSTRUCT ps;
         HDC hdc = BeginPaint(hwnd, &ps);
 
-        unsigned char *pixelData = image->data;
+        unsigned char *alignedData = CreateAlignedBuffer(image);
 
-        if (image && pixelData) {
+        if (image && alignedData) {
             BITMAPINFO bmi = { 0 };
             bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
             bmi.bmiHeader.biWidth = image->width;
@@ -41,7 +54,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
             StretchDIBits(hdc,
                 0, 0, image->width, image->height,   // Destination
                 0, 0, image->width, image->height,   // Source
-                pixelData, &bmi, DIB_RGB_COLORS, SRCCOPY);
+                alignedData, &bmi, DIB_RGB_COLORS, SRCCOPY);
         }
 
         EndPaint(hwnd, &ps);
