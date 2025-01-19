@@ -18,28 +18,28 @@ add_subdirectory(modules/imgcodecs)
 add_subdirectory(modules/core)
 add_subdirectory(modules/highgui)
 
-add_executable(read_pbm_file examples/read_pbm_file.c)
+add_executable(read_pbm_file examples/debug/read_pbm_file.c)
 target_link_libraries(read_pbm_file PRIVATE core imgcodecs highgui)
 
-add_executable(pixel_display examples/pixel_display.c)
+add_executable(pixel_display examples/debug/pixel_display.c)
 target_link_libraries(pixel_display PRIVATE core imgcodecs highgui)
 
-add_executable(p4_pbm_display examples/p4_pbm_display.c)
+add_executable(p4_pbm_display examples/debug/p4_pbm_display.c)
 target_link_libraries(p4_pbm_display PRIVATE core imgcodecs highgui)
 
-add_executable(p4_pbm_comment examples/p4_pbm_comment.c)
+add_executable(p4_pbm_comment examples/debug/p4_pbm_comment.c)
 target_link_libraries(p4_pbm_comment PRIVATE core imgcodecs highgui)
 
-add_executable(display_loop examples/display_loop.c)
+add_executable(display_loop examples/debug/display_loop.c)
 target_link_libraries(display_loop PRIVATE core imgcodecs highgui)
 
-add_executable(display_pgm_P2 examples/display_pgm_P2.c)
+add_executable(display_pgm_P2 examples/debug/display_pgm_P2.c)
 target_link_libraries(display_pgm_P2 PRIVATE core imgcodecs highgui)
 
-add_executable(display_pgm_P5 examples/display_pgm_P5.c)
+add_executable(display_pgm_P5 examples/debug/display_pgm_P5.c)
 target_link_libraries(display_pgm_P5 PRIVATE core imgcodecs highgui)
 
-add_executable(read_pgm_file examples/read_pgm_file.c)
+add_executable(read_pgm_file examples/debug/read_pgm_file.c)
 target_link_libraries(read_pgm_file PRIVATE core imgcodecs highgui)
 
 
