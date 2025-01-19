@@ -8,7 +8,7 @@ int main(){
     printf("%s\n", filename); 
 
     Image *image;
-    image = read_pbm(filename);
+    image = read_pxm(filename);
 
     if (image == NULL){
         printf("Error\n");
@@ -30,7 +30,7 @@ int main(){
     printf("%s\n", filename1); 
 
     Image *image1;
-    image1 = read_pbm(filename1);
+    image1 = read_pxm(filename1);
 
     if (image1 == NULL){
         printf("Error\n");

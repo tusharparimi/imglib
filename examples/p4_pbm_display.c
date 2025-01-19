@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
     "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\pbm\\scs.pbm";
 
     Image *image;
-    image = read_pbm(filename);
+    image = read_pxm(filename);
 
     if (image == NULL){
         printf("Error\n");
