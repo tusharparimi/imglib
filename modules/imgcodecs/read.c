@@ -97,7 +97,7 @@ unsigned char *P5_bytes2pixelData(int width, int height, unsigned char *bytes, u
 
 }
 
-unsigned char *decode_pbm_P1_data(FILE *fptr, int width, int height) {
+unsigned char *decode_P1_data(FILE *fptr, int width, int height) {
 
     unsigned char *data = (unsigned char *)malloc(width * height);
     if (data == NULL){
@@ -122,7 +122,7 @@ unsigned char *decode_pbm_P1_data(FILE *fptr, int width, int height) {
     return pixelData;
 }
 
-unsigned char *decode_pbm_P4_data(FILE *fptr, int width, int height) {
+unsigned char *decode_P4_data(FILE *fptr, int width, int height) {
     
     int bytes_per_row = (width + 7) / 8;
     unsigned char *bytes = (unsigned char *)malloc(sizeof(unsigned char) * bytes_per_row * height);
@@ -144,7 +144,7 @@ unsigned char *decode_pbm_P4_data(FILE *fptr, int width, int height) {
     return pixelData;
 }
 
-unsigned char *decode_pgm_P2_data(FILE *fptr, int width, int height, int max_value) {
+unsigned char *decode_P2_data(FILE *fptr, int width, int height, int max_value) {
     unsigned char *data = (unsigned char *)malloc(width * height);
     if (data == NULL){
         fclose(fptr);
@@ -175,7 +175,7 @@ unsigned char *decode_pgm_P2_data(FILE *fptr, int width, int height, int max_val
     return pixelData;
 }
 
-unsigned char *decode_pgm_P5_data(FILE *fptr, int width, int height, unsigned char max_value) {
+unsigned char *decode_P5_data(FILE *fptr, int width, int height, unsigned char max_value) {
 
     unsigned char *bytes = (unsigned char *)malloc(sizeof(unsigned char) * width * height);
     if (bytes == NULL) {
@@ -246,16 +246,16 @@ Image *read_pxm(const char *filename) {
 
     unsigned char *pixelData;
     if (strcmp(format, "P1") == 0) {
-        pixelData = decode_pbm_P1_data(fptr, width, height);
+        pixelData = decode_P1_data(fptr, width, height);
     }
     else if (strcmp(format, "P4") == 0) {
-        pixelData = decode_pbm_P4_data(fptr, width, height);
+        pixelData = decode_P4_data(fptr, width, height);
     }
     else if (strcmp(format, "P2") == 0) {
-        pixelData = decode_pgm_P2_data(fptr, width, height, max_value);
+        pixelData = decode_P2_data(fptr, width, height, max_value);
     }
     else if (strcmp(format, "P5") == 0) {
-        pixelData = decode_pgm_P5_data(fptr, width, height, max_value);
+        pixelData = decode_P5_data(fptr, width, height, max_value);
     }
     else if (strcmp(format, "P3") == 0) {
         printf("P3 format not implemented\n");
