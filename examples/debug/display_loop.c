@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\pbm\\enlarged_j_ascii.pbm";
 
     Image *image;
-    image = read_pxm(filename);
+    image = ReadPxm(filename);
 
     if (image == NULL){
         printf("Error\n");
@@ -26,7 +26,7 @@ int main(int argc, char *argv[]) {
     "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\pbm\\enlarged_a_ascii.pbm";
 
     Image *image1;
-    image1 = read_pxm(filename1);
+    image1 = ReadPxm(filename1);
 
     if (image1 == NULL){
         printf("Error\n");

@@ -12,7 +12,7 @@ int main(int argc, char *argv[]) {
     "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\pgm\\buffalo.pgm";
 
     Image *image;
-    image = read_pxm(filename);
+    image = ReadPxm(filename);
 
     if (image == NULL){
         printf("Error\n");

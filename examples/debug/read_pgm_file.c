@@ -8,7 +8,7 @@ int main(){
     printf("%s\n", filename); 
 
     Image *image;
-    image = read_pxm(filename);
+    image = ReadPxm(filename);
 
     if (image == NULL){
         printf("Error\n");

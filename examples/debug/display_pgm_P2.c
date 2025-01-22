@@ -9,7 +9,7 @@ int main(int argc, char *argv[]) {
     "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\pgm\\enlarged_feep_ascii.pgm";
 
     Image *image;
-    image = read_pxm(filename);
+    image = ReadPxm(filename);
 
     if (image == NULL){
         printf("Error\n");
