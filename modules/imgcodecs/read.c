@@ -62,6 +62,38 @@ unsigned char max_value) {
     return pixelData;
 }
 
+unsigned char *Ascii2PixelData_P3(int width, int height, unsigned char *data, unsigned char max_value) {
+    int w = width;
+    int h = height;
+    unsigned char *pixelData = (unsigned char *)malloc(w * h * 3 * sizeof(unsigned char));
+
+    if (pixelData == NULL) {
+        free(pixelData);
+        printf("Memory not allocated.\n");
+        return NULL;
+    }
+
+    unsigned char r = 0;
+    unsigned char g = 0;
+    unsigned char b = 0;
+
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) { 
+            
+            r = (data[((y * w) + x) * 3 + 0] * 255) / max_value;
+            g = (data[((y * w) + x) * 3 + 1] * 255) / max_value;
+            b = (data[((y * w) + x) * 3 + 2] * 255) / max_value;
+
+            pixelData[((y * w) + x) * 3 + 0] = r;
+            pixelData[((y * w) + x) * 3 + 1] = g;
+            pixelData[((y * w) + x) * 3 + 2] = b;
+
+        }
+    }
+
+    return pixelData;
+}
+
 unsigned char *Binary2PixelData_P4(int width, int height, unsigned char *bytes) {
 
     int bytes_per_row = (width + 7) / 8;
@@ -112,6 +144,45 @@ unsigned char *Binary2PixelData_P5(int width, int height, unsigned char *bytes, 
             pixelData[((y * width) + x) * 3 + 0] = pixel_value;
             pixelData[((y * width) + x) * 3 + 1] = pixel_value;
             pixelData[((y * width) + x) * 3 + 2] = pixel_value;
+
+        }
+    }
+
+    return pixelData;
+
+}
+
+unsigned char *Binary2PixelData_P6(int width, int height, unsigned char *bytes, unsigned char max_value) {
+
+    unsigned char *pixelData = (unsigned char *)malloc(width * height * 3 * sizeof(unsigned char));
+    if (pixelData == NULL) {
+        free(pixelData);
+        printf("Memory not allocated.\n");
+        return NULL;
+    }
+
+    unsigned char r = 0;
+    unsigned char g = 0;
+    unsigned char b = 0;
+
+    for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+
+            if (max_value == 255) {
+                r = bytes[((y * width) + x) * 3 + 0];
+                g = bytes[((y * width) + x) * 3 + 1];
+                b = bytes[((y * width) + x) * 3 + 2];
+            }
+
+            else {
+                r = ((bytes[((y * width) + x) * 3 + 0]) * 255) / max_value;
+                g = ((bytes[((y * width) + x) * 3 + 1]) * 255) / max_value;
+                b = ((bytes[((y * width) + x) * 3 + 2]) * 255) / max_value;
+            }
+
+            pixelData[((y * width) + x) * 3 + 0] = b;
+            pixelData[((y * width) + x) * 3 + 1] = g;
+            pixelData[((y * width) + x) * 3 + 2] = r;
 
         }
     }
@@ -176,6 +247,41 @@ unsigned char *DecodeData_P2(FILE *fptr, int width, int height, int max_value) {
     return pixelData;
 }
 
+unsigned char *DecodeData_P3(FILE *fptr, int width, int height, int max_value) {
+     unsigned char *data = (unsigned char *)malloc(width * height * 3 * sizeof(unsigned char));
+    if (data == NULL){
+        fclose(fptr);
+        printf("Failed to allocate memory for image data\n");
+        return NULL;
+    }
+
+    unsigned char val;
+    int c;
+    int i = 0;
+    while((c = fgetc(fptr)) != EOF){
+        if (c == '\n' || c == ' ' || c == '\r'){
+            continue;
+        }
+        ungetc(c, fptr);
+        if (fscanf(fptr, "%hhu", &val) != 1) {
+            fclose(fptr);
+            printf("Error reading data from file\n");
+            return NULL;
+        }
+        *(data + i) = val;
+        i++;
+    }
+
+    if (max_value == 255) {
+        return data;
+    }
+
+    unsigned char *pixelData = Ascii2PixelData_P3(width, height, data, max_value);
+    free(data);
+
+    return pixelData;
+}
+
 unsigned char *DecodeData_P4(FILE *fptr, int width, int height) {
     
     int bytes_per_row = (width + 7) / 8;
@@ -218,6 +324,26 @@ unsigned char *DecodeData_P5(FILE *fptr, int width, int height, unsigned char ma
     return pixelData;
 }
 
+unsigned char *DecodeData_P6(FILE *fptr, int width, int height, unsigned char max_value) {
+
+    unsigned char *bytes = (unsigned char *)malloc(sizeof(unsigned char) * width * height * 3);
+    if (bytes == NULL) {
+        fclose(fptr);
+        printf("FAiled to allocate memory for pixelData\n");
+        return NULL;
+    }
+
+    if (fread(bytes, sizeof(unsigned char), width * height * 3, fptr) != width * height * 3) {
+        fclose(fptr);
+        printf("Failed to read pixelData\n");
+        return NULL;
+    }
+
+    unsigned char *pixelData = Binary2PixelData_P6(width, height, bytes, max_value);
+
+    return pixelData;
+}
+
 
 Image *ReadPxm(const char *filename) {
     FILE *fptr = fopen(filename, "rb");
@@ -256,7 +382,8 @@ Image *ReadPxm(const char *filename) {
     fgetc(fptr);
 
     int max_value;
-    if (strcmp(format, "P2") == 0 || strcmp(format, "P5") == 0) {
+    if (strcmp(format, "P2") == 0 || strcmp(format, "P5") == 0 ||
+        strcmp(format, "P3") == 0 || strcmp(format, "P6") == 0) {
         if (fscanf(fptr, "%d", &max_value) != 1 || max_value < 0 || max_value > 255) {
             fclose(fptr);
             printf("Invalid max val\n");
@@ -281,14 +408,10 @@ Image *ReadPxm(const char *filename) {
         pixelData = DecodeData_P5(fptr, width, height, max_value);
     }
     else if (strcmp(format, "P3") == 0) {
-        printf("P3 format not implemented\n");
-        fclose(fptr);
-        return NULL;
+        pixelData = DecodeData_P3(fptr, width, height, max_value);
     }
-    else if (strcmp(format, "P6") == 0) {
-        printf("P6 format not implemented\n");
-        fclose(fptr);
-        return NULL;
+    else {
+        pixelData = DecodeData_P6(fptr, width, height, max_value);
     }
     
     fclose(fptr);    

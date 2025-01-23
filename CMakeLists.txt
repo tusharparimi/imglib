@@ -42,6 +42,12 @@ target_link_libraries(display_pgm_P5 PRIVATE core imgcodecs highgui)
 add_executable(read_pgm_file examples/debug/read_pgm_file.c)
 target_link_libraries(read_pgm_file PRIVATE core imgcodecs highgui)
 
+add_executable(read_ppm_file examples/debug/read_ppm_file.c)
+target_link_libraries(read_ppm_file PRIVATE core imgcodecs highgui)
+
+add_executable(display_ppm_P6 examples/debug/display_ppm_P6.c)
+target_link_libraries(display_ppm_P6 PRIVATE core imgcodecs highgui)
+
 
 add_library(imglib INTERFACE)
 target_link_libraries(imglib INTERFACE core imgcodecs highgui)
