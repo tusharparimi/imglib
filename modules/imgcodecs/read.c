@@ -207,13 +207,20 @@ unsigned char *DecodeData_P1(FILE *fptr, int width, int height) {
         return NULL;
     }
 
-    unsigned char c;
+    unsigned char val;
+    int c;
     int i = 0;
-    while((c = fgetc(fptr)) != EOF && i < (width * height)) {
-        if (c == '\n' || c == ' ' || c == '\r') {
+    while((c = fgetc(fptr)) != EOF){
+        if (c == '\n' || c == ' ' || c == '\r'){
             continue;
         }
-        *(data + i) = c - '0';
+        ungetc(c, fptr);
+        if (fscanf(fptr, "%hhu", &val) != 1) {
+            fclose(fptr);
+            printf("Error reading data from file\n");
+            return NULL;
+        }
+        *(data + i) = val;
         i++;
     }
 
