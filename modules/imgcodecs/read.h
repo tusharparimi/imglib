@@ -1,8 +1,8 @@
 #ifndef READ_H
 #define READ_H
 
-#include "core.h"
+#include "read_pxm.h"
 
-Image *ReadPxm(const char *filename);
+Image *ReadImage(const char *filename);
 
 #endif
