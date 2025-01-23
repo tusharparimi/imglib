@@ -76,15 +76,23 @@ unsigned char *Ascii2PixelData_P3(int width, int height, unsigned char *data, un
     unsigned char b = 0;
 
     for (int y = 0; y < h; y++) {
-        for (int x = 0; x < w; x++) { 
-            
-            r = (data[((y * w) + x) * 3 + 0] * 255) / max_value;
-            g = (data[((y * w) + x) * 3 + 1] * 255) / max_value;
-            b = (data[((y * w) + x) * 3 + 2] * 255) / max_value;
+        for (int x = 0; x < w; x++) {
 
-            pixelData[((y * w) + x) * 3 + 0] = r;
+            if (max_value == 255) {
+                r = data[((y * w) + x) * 3 + 0];
+                g = data[((y * w) + x) * 3 + 1];
+                b = data[((y * w) + x) * 3 + 2];
+            }
+            else {
+                r = (data[((y * w) + x) * 3 + 0] * 255) / max_value;
+                g = (data[((y * w) + x) * 3 + 1] * 255) / max_value;
+                b = (data[((y * w) + x) * 3 + 2] * 255) / max_value;
+            } 
+            
+            // winapi needs bgr, ppm is in rgb
+            pixelData[((y * w) + x) * 3 + 0] = b;
             pixelData[((y * w) + x) * 3 + 1] = g;
-            pixelData[((y * w) + x) * 3 + 2] = b;
+            pixelData[((y * w) + x) * 3 + 2] = r;
 
         }
     }
@@ -178,6 +186,7 @@ unsigned char *Binary2PixelData_P6(int width, int height, unsigned char *bytes, 
                 b = ((bytes[((y * width) + x) * 3 + 2]) * 255) / max_value;
             }
 
+            // winapi needs bgr, ppm is in rgb
             pixelData[((y * width) + x) * 3 + 0] = b;
             pixelData[((y * width) + x) * 3 + 1] = g;
             pixelData[((y * width) + x) * 3 + 2] = r;
@@ -268,10 +277,6 @@ unsigned char *DecodeData_P3(FILE *fptr, int width, int height, int max_value) {
         }
         *(data + i) = val;
         i++;
-    }
-
-    if (max_value == 255) {
-        return data;
     }
 
     unsigned char *pixelData = Ascii2PixelData_P3(width, height, data, max_value);
