@@ -3,8 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-unsigned char *Ascii2PixelData_P1(int width, int height, unsigned char *data, const char *format, 
-unsigned char max_value) {
+unsigned char *Ascii2PixelData_P1(int width, int height, unsigned char *data) {
     int w = width;
     int h = height;
     unsigned char *pixelData = (unsigned char *)malloc(w * h * 3 * sizeof(unsigned char));
@@ -33,8 +32,7 @@ unsigned char max_value) {
     return pixelData;
 }
 
-unsigned char *Ascii2PixelData_P2(int width, int height, unsigned char *data, const char *format, 
-unsigned char max_value) {
+unsigned char *Ascii2PixelData_P2(int width, int height, unsigned char *data, unsigned char max_value) {
     int w = width;
     int h = height;
     unsigned char *pixelData = (unsigned char *)malloc(w * h * 3 * sizeof(unsigned char));
@@ -210,7 +208,7 @@ unsigned char *DecodeData_P1(FILE *fptr, int width, int height) {
         i++;
     }
 
-    unsigned char *pixelData = Ascii2PixelData_P1(width, height, data, "P1", 0);
+    unsigned char *pixelData = Ascii2PixelData_P1(width, height, data);
     free(data);
 
     return pixelData;
@@ -241,7 +239,7 @@ unsigned char *DecodeData_P2(FILE *fptr, int width, int height, int max_value) {
         i++;
     }
 
-    unsigned char *pixelData = Ascii2PixelData_P2(width, height, data, "P2", max_value);
+    unsigned char *pixelData = Ascii2PixelData_P2(width, height, data, max_value);
     free(data);
 
     return pixelData;
