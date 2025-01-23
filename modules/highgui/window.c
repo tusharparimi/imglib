@@ -1,4 +1,4 @@
-#include "wind.h"
+#include "window.h"
 #include <stdint.h>
 #include <stdlib.h>
 #include <stdio.h>

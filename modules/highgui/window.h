@@ -1,5 +1,5 @@
-#ifndef WIND_H
-#define WIND_H
+#ifndef WINDOW_H
+#define WINDOW_H
 
 #define UNICODE
 #define _UNICODE
