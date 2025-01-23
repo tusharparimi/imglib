@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-unsigned char *Ascii2PixelData(int width, int height, unsigned char *data, const char *format, 
+unsigned char *Ascii2PixelData_P1(int width, int height, unsigned char *data, const char *format, 
 unsigned char max_value) {
     int w = width;
     int h = height;
@@ -15,28 +15,17 @@ unsigned char max_value) {
         return NULL;
     }
 
-    unsigned char r = 0;
-    unsigned char g = 0;
-    unsigned char b = 0;
+    unsigned char pixel_value = 0;
 
     for (int y = 0; y < h; y++) {
         for (int x = 0; x < w; x++) { 
 
-            if (strcmp(format, "P1") == 0) {
-                //ternary operator used to reverse 0s and 1s, in pbm  0 is white and 1 is black
-                r = (data[(y * w) + x] == 0 ? 1 : 0) * 255;
-                g = (data[(y * w) + x] == 0 ? 1 : 0) * 255;
-                b = (data[(y * w) + x] == 0 ? 1 : 0) * 255;
-            }
-            else if (strcmp(format, "P2") == 0) {
-                r = (data[(y * w) + x] * 255) / max_value;
-                g = (data[(y * w) + x] * 255) / max_value;
-                b = (data[(y * w) + x] * 255) / max_value;
-            }
+            // reverse 0s and 1s, in pbm  0 is white and 1 is black
+            pixel_value = (data[(y * w) + x] == 0 ? 1 : 0) * 255;
 
-            pixelData[((y * w) + x) * 3 + 0] = r;
-            pixelData[((y * w) + x) * 3 + 1] = g;
-            pixelData[((y * w) + x) * 3 + 2] = b;
+            pixelData[((y * w) + x) * 3 + 0] = pixel_value;
+            pixelData[((y * w) + x) * 3 + 1] = pixel_value;
+            pixelData[((y * w) + x) * 3 + 2] = pixel_value;
 
         }
     }
@@ -44,7 +33,36 @@ unsigned char max_value) {
     return pixelData;
 }
 
-unsigned char *Binary2PixelData(int width, int height, unsigned char *bytes) {
+unsigned char *Ascii2PixelData_P2(int width, int height, unsigned char *data, const char *format, 
+unsigned char max_value) {
+    int w = width;
+    int h = height;
+    unsigned char *pixelData = (unsigned char *)malloc(w * h * 3 * sizeof(unsigned char));
+
+    if (pixelData == NULL) {
+        free(pixelData);
+        printf("Memory not allocated.\n");
+        return NULL;
+    }
+
+    unsigned char pixel_value = 0;
+
+    for (int y = 0; y < h; y++) {
+        for (int x = 0; x < w; x++) { 
+            
+            pixel_value = (data[(y * w) + x] * 255) / max_value;
+
+            pixelData[((y * w) + x) * 3 + 0] = pixel_value;
+            pixelData[((y * w) + x) * 3 + 1] = pixel_value;
+            pixelData[((y * w) + x) * 3 + 2] = pixel_value;
+
+        }
+    }
+
+    return pixelData;
+}
+
+unsigned char *Binary2PixelData_P4(int width, int height, unsigned char *bytes) {
 
     int bytes_per_row = (width + 7) / 8;
     unsigned char *pixelData = (unsigned char *)malloc(width * height * 3 * sizeof(unsigned char));
@@ -61,12 +79,13 @@ unsigned char *Binary2PixelData(int width, int height, unsigned char *bytes) {
             int byte_index = y * bytes_per_row + (x / 8);
             int bit_index = x % 8;
             unsigned char byte = bytes[byte_index];
-            unsigned char pixel = (byte >> (7 - bit_index)) & 1;
+            unsigned char pixel_value = (byte >> (7 - bit_index)) & 1;
+            pixel_value = (pixel_value == 0 ? 1 : 0) * 255;
 
-            //ternary operator used to reverse 0s and 1s, in pbm  0 is white and 1 is black
-            pixelData[((y * width) + x) * 3 + 0] = (pixel == 0 ? 1 : 0) * 255;
-            pixelData[((y * width) + x) * 3 + 1] = (pixel == 0 ? 1 : 0) * 255;
-            pixelData[((y * width) + x) * 3 + 2] = (pixel == 0 ? 1 : 0) * 255;
+            // reverse 0s and 1s, in pbm  0 is white and 1 is black
+            pixelData[((y * width) + x) * 3 + 0] = pixel_value;
+            pixelData[((y * width) + x) * 3 + 1] = pixel_value;
+            pixelData[((y * width) + x) * 3 + 2] = pixel_value;
 
         }
     }
@@ -83,12 +102,16 @@ unsigned char *Binary2PixelData_P5(int width, int height, unsigned char *bytes, 
         return NULL;
     }
 
+    unsigned char pixel_value = 0;
+
     for (int y = 0; y < height; y++) {
         for (int x = 0; x < width; x++) {
 
-            pixelData[((y * width) + x) * 3 + 0] = ((bytes[(y * width) + x]) * 255) / max_value;
-            pixelData[((y * width) + x) * 3 + 1] = ((bytes[(y * width) + x]) * 255) / max_value;
-            pixelData[((y * width) + x) * 3 + 2] = ((bytes[(y * width) + x]) * 255) / max_value;
+            pixel_value = ((bytes[(y * width) + x]) * 255) / max_value;
+
+            pixelData[((y * width) + x) * 3 + 0] = pixel_value;
+            pixelData[((y * width) + x) * 3 + 1] = pixel_value;
+            pixelData[((y * width) + x) * 3 + 2] = pixel_value;
 
         }
     }
@@ -116,7 +139,7 @@ unsigned char *DecodeData_P1(FILE *fptr, int width, int height) {
         i++;
     }
 
-    unsigned char *pixelData = Ascii2PixelData(width, height, data, "P1", 0);
+    unsigned char *pixelData = Ascii2PixelData_P1(width, height, data, "P1", 0);
     free(data);
 
     return pixelData;
@@ -147,7 +170,7 @@ unsigned char *DecodeData_P2(FILE *fptr, int width, int height, int max_value) {
         i++;
     }
 
-    unsigned char *pixelData = Ascii2PixelData(width, height, data, "P2", max_value);
+    unsigned char *pixelData = Ascii2PixelData_P2(width, height, data, "P2", max_value);
     free(data);
 
     return pixelData;
@@ -169,7 +192,7 @@ unsigned char *DecodeData_P4(FILE *fptr, int width, int height) {
         return NULL;
     }
 
-    unsigned char *pixelData = Binary2PixelData(width, height, bytes);
+    unsigned char *pixelData = Binary2PixelData_P4(width, height, bytes);
     free(bytes);
 
     return pixelData;
