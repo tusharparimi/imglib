@@ -2,6 +2,6 @@
 #include <stdio.h>
 
 
-void WritePxm(Image *image, const char *filename) {
+void WritePxm(Image *image, const char *filepath) {
     printf("Not implemented yet\n");
 }

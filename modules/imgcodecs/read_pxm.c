@@ -355,8 +355,8 @@ unsigned char *DecodeData_P6(FILE *fptr, int width, int height, unsigned char ma
 }
 
 
-Image *ReadPxm(const char *filename) {
-    FILE *fptr = fopen(filename, "rb");
+Image *ReadPxm(const char *filepath) {
+    FILE *fptr = fopen(filepath, "rb");
     if (fptr == NULL) {
         printf("Error opening file\n");
         return NULL;

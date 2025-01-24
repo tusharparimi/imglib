@@ -3,6 +3,6 @@
 
 #include "core.h"
 
-void WriteImage(Image *image, const char *filename);
+void WriteImage(Image *image, const char *filepath);
 
 #endif

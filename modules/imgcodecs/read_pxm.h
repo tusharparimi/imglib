@@ -3,6 +3,6 @@
 
 #include "core.h"
 
-Image *ReadPxm(const char *filename);
+Image *ReadPxm(const char *filepath);
 
 #endif
