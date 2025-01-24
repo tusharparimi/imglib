@@ -7,7 +7,9 @@ set(CMAKE_C_STANDARD_REQUIRED True)
 set(SOURCES
     read.c
     read_pxm.c
+
     write.c
+    write_pxm.c
 
 )
 
