@@ -58,6 +58,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
         }
 
         EndPaint(hwnd, &ps);
+        free(alignedData);
         return 0;
     }
     case WM_KEYDOWN: {
