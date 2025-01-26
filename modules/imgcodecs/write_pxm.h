@@ -3,6 +3,6 @@
 
 #include "core.h"
 
-int WritePxm(Image *image, const char *filepath, const char *format, unsigned char max_value);
+void WritePxm(Image *image, const char *filepath, const char *format, unsigned char max_value);
 
 #endif

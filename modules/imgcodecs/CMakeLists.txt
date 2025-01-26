@@ -5,6 +5,8 @@ set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
 set(SOURCES
+    imgcodecs_utils.c
+
     read.c
     read_pxm.c
 

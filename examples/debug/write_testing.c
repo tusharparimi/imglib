@@ -20,11 +20,12 @@ int main(int argc, char *argv[]) {
     "C:\\Users\\tusha\\Documents\\projects\\imglib\\images\\ppm\\sample_test.ppm";
 
 
-    WritePxm(image, filename1, "P3", 255);
+    // WritePxm(image, filename1, "P6", 255);
+    WriteImage(image, filename1);
 
     Image *image1;
     image1 = ReadImage(filename1);
-    if (image1 == NULL){
+    if (image1 == NULL) {
         printf("Error\n");
     }
 

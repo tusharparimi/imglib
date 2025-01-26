@@ -3,31 +3,27 @@
 #include <string.h>
 #include <assert.h>
 
-int GetExtensionIndexfromfilepath(const char *filepath) {
-    int i = (int)strlen(filepath) - 1;
-    while (i > 0) {
-        if (filepath[i] == '.') {
-            return i + 1;
-        }
-        i--;
-    }
-
-    return -1;
-}
-
-
 Image *ReadImage(const char *filepath) {
 
     int extension_idx = GetExtensionIndexfromfilepath(filepath);
     assert((extension_idx > 0 && extension_idx < strlen(filepath)) && "Error in file extension format");
 
-    char *file_extension = (char *)malloc((strlen(filepath) - extension_idx) * sizeof(char));
-    for (int i = extension_idx; i < strlen(filepath); i++) {
-        *(file_extension + (i - extension_idx)) = filepath[i];
-        i++;
+    char *file_extension = (char *)malloc((strlen(filepath) - extension_idx + 1) * sizeof(char));
+    if (file_extension == NULL) {
+        free(file_extension);
+        printf("Memory not allocated.\n");
+        exit(1);
     }
 
-    if (strcmp(file_extension, "pbm") || strcmp(file_extension, "pgm") || strcmp(file_extension, "ppm")) {
+    for (int i = extension_idx; i < strlen(filepath) + 1; i++) {
+        if (i == strlen(filepath)) {
+            *(file_extension + (i - extension_idx)) = '\0';
+        }
+
+        *(file_extension + (i - extension_idx)) = filepath[i];
+    }
+
+    if (strcmp(file_extension, "pbm") == 0 || strcmp(file_extension, "pgm") == 0 || strcmp(file_extension, "ppm") == 0) {
         Image *image = ReadPxm(filepath);
         return image;
     }
