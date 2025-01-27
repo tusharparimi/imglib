@@ -54,12 +54,6 @@ target_link_libraries(display_ppm_P3 PRIVATE core imgcodecs highgui)
 add_executable(write_testing examples/debug/write_testing.c)
 target_link_libraries(write_testing PRIVATE core imgcodecs highgui)
 
-add_executable(read_written_files examples/debug/read_written_files.c)
-target_link_libraries(read_written_files PRIVATE core imgcodecs highgui)
-
-add_executable(read_char examples/debug/read_char.c)
-target_link_libraries(read_char PRIVATE core imgcodecs highgui)
-
 
 add_library(imglib INTERFACE)
 target_link_libraries(imglib INTERFACE core imgcodecs highgui)
